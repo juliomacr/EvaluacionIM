@@ -4,25 +4,67 @@ import { AuthUserContext } from '../Session';
 import { withFirebase } from '../Firebase';
 import MessageList from './MessageList';
 
+
+import DayPicker from 'react-day-picker';
+import Switch from "react-switch";
+
+import 'react-day-picker/lib/style.css';
+
 class Messages extends Component {
   constructor(props) {
     super(props);
 
     this.initialState = {
+      requesteddate: undefined,
       vendorName: '',
       job: '',
-      text123: '',
+      vendorNumber: '',
+      requesttype: '',
+      comments: '',
+      ach: '',
       loading: false,
       messages: [],
-      requesteddate: '',
+      checked: false,
+      checkedB: false,
       limit: 5
     };
 
     this.state = this.initialState;
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleDayClick = this.handleDayClick.bind(this);
+    this.handleSwitchChangeA = this.handleSwitchChangeA.bind(this);
+    this.handleSwitchChangeB = this.handleSwitchChangeB.bind(this);
+
+    }
+
+
+  handleSwitchChangeA(checked) {
+      this.setState({ checked });
   }
 
+  handleSwitchChangeB(checkedB) {
+      this.setState({ checkedB });
+  }
 
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+
+    });
+  }
+
+  handleDayClick(day, { selected }) {
+      if (selected) {
+        // Unselect the day if already selected
+        this.setState({ requesteddate: undefined });
+        return;
+      }
+      this.setState({ requesteddate: day });
+  }
 
   componentDidMount() {
     this.onListenForMessages();
@@ -58,20 +100,12 @@ class Messages extends Component {
     this.props.firebase.messages().off();
   }
 
-  handleInputChange(event) {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value
-    });
-  }
+ 
 
 
 
   onClearMessage = event => {
-    this.setState({ text: '', vendorName:'' });
+    this.setState({ vendorNumber: '', vendorName:'', requesteddate:'', requesttype:'', comments:'', ach:'' , checked: false, checkedB: false});
     event.preventDefault();
   };
 
@@ -80,21 +114,25 @@ class Messages extends Component {
 
   onCreateMessage = (event, authUser) => {
     this.props.firebase.messages().push({
-      text: this.state.text,
+      requesttype: this.state.checked,
+      requesteddate: this.state.requesteddate.toLocaleDateString(),
+      vendorNumber: this.state.vendorNumber,
       vendorName: this.state.vendorName,
-      userId: authUser.uid,
       createdAt: this.props.firebase.serverValue.TIMESTAMP,
+      userId: authUser.uid,
+      comments: this.state.comments,
+      ach: this.state.checkedB,
     });
 
-    this.setState({ text: '', vendorName:'' });
+    this.setState({ vendorNumber: '', vendorName:'', requesteddate:'', requesttype:'', comments:'', ach:'', checked: false, checkedB: false });
 
     event.preventDefault();
   };
 
-  onEditMessage = (message, text, vendorName) => {
+  onEditMessage = (message, vendorNumber, vendorName) => {
     this.props.firebase.message(message.uid).set({
       ...message,
-      text,
+      vendorNumber,
       vendorName,
       editedAt: this.props.firebase.serverValue.TIMESTAMP,
     });
@@ -113,7 +151,8 @@ class Messages extends Component {
 
   render() {
     const { users } = this.props;
-    const { text, messages, loading, vendorName, requesteddate } = this.state;
+    const { vendorNumber, messages, loading, vendorName, requesteddate, requesttype, comments, ach, checked, checkedB } = this.state;
+
 
     return (
       <AuthUserContext.Consumer>
@@ -128,9 +167,9 @@ class Messages extends Component {
             <label > Vendor Number: </label> 
             <input
             type = "text"
-            name = "text"
+            name = "vendorNumber"
             value = {
-              text
+              vendorNumber
             }
             onChange={ this.handleInputChange } 
             /> 
@@ -147,31 +186,47 @@ class Messages extends Component {
             /> 
             
             <label> Requested Date: </label> 
-            <input
-            type = "text"
-            name = "requesteddate"
-            value = {
-              requesteddate
-            }
-            onChange={ this.handleInputChange } 
-            /> 
 
-            <label> Type of Request: </label> 
-            <input
-            type = "text"
-            name = "vendorName1"
-            value = {
-              vendorName
-            }
-            onChange={ this.handleInputChange } 
-            /> 
+
+
+            <div>
+        <DayPicker
+          onDayClick={this.handleDayClick}
+          selectedDays={this.state.requesteddate}
+        />
+        {this.state.requesteddate ? (
+          <p>You clicked {this.state.requesteddate.toLocaleDateString()}</p>
+        ) : (
+          <p>Please select a day.</p>
+        )}
+      </div>
+
+
+
+
+
+      <div className="switch">
+        <label>Type of Request</label>
+        <label htmlFor="normal-switch">
+          <span>Is this a new request?</span>
+          <Switch
+            onChange={this.handleSwitchChangeA}
+            checked={this.state.checked}
+            className="react-switch"
+            id="normal-switch"
+          />
+        </label>
+        <p>This is a <span>{this.state.checked ? <b>NEW</b>: <b>CHANGE</b>}</span> request.</p>
+      </div>
+
+
 
             <label> Comments: </label> 
             <input
             type = "text"
-            name = "vendorName2"
+            name = "comments"
             value = {
-              vendorName
+              comments
             }
             onChange={ this.handleInputChange } 
             /> 
@@ -179,12 +234,28 @@ class Messages extends Component {
             <label> ACH: </label> 
             <input
             type = "text"
-            name = "vendorName3"
+            name = "ach"
             value = {
-              vendorName
+              ach
             }
             onChange={ this.handleInputChange } 
             /> 
+
+
+<div className="switch">
+        <label>ACH</label>
+        <label htmlFor="normal-switch">
+          <span>Is this an <b>ACH</b> request?</span>
+          <Switch
+            onChange={this.handleSwitchChangeB}
+            checked={this.state.checkedB}
+            className="react-switch"
+            id="normal-switch"
+          />
+        </label>
+        <p>This is <span>{this.state.checkedB ? <b>ACH</b>: <b>NOT an ACH</b>}</span> request.</p>
+      </div>
+
 
 
 
@@ -192,10 +263,10 @@ class Messages extends Component {
 
             
 
-
+            <button type="button" onClick={this.onClearMessage} > Clear </button> 
             </form>
 
-            <button type="button" onClick={this.onClearMessage} > Clear </button> 
+
 
 
             {!loading && messages && (
