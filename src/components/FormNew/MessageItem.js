@@ -14,27 +14,29 @@ class MessageItem extends Component {
     this.setState(state => ({
       editMode: !state.editMode,
       editText: this.props.message.text,
-      names: this.props.message.names,
+      vendorName: this.props.message.vendorName,
     }));
   };
 
-  onChangeEditTextA = event => {
-    this.setState({ editText: event.target.value });
-  };
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
 
-  onChangeEditTextB = event => {
-    this.setState({ names: event.target.value });
-  };
+    this.setState({
+      [name]: value
+    });
+  }
 
   onSaveEditText = () => {
-    this.props.onEditMessage(this.props.message, this.state.editText, this.state.names);
+    this.props.onEditMessage(this.props.message, this.state.editText, this.state.vendorName);
 
     this.setState({ editMode: false });
   };
 
   render() {
     const { message, onRemoveMessage } = this.props;
-    const { editMode, editText, names } = this.state;
+    const { editMode, editText, vendorName } = this.state;
 
     return (
       <li>
@@ -47,13 +49,13 @@ class MessageItem extends Component {
           />
           
  
-          <label>Names</label>
+          <label>vendorName</label>
 <input 
     type="text" 
-    name="names" 
-    value={names}
-    onChange={this.onChangeEditTextB}
-
+    name="vendorName" 
+    value={vendorName}
+    onChange={ this.handleInputChange } 
+    
      />
 
           </div>

@@ -9,24 +9,19 @@ class Messages extends Component {
     super(props);
 
     this.initialState = {
-      names: '',
+      vendorName: '',
       job: '',
       text123: '',
       loading: false,
       messages: [],
+      requesteddate: '',
       limit: 5
     };
 
     this.state = this.initialState;
+    this.handleInputChange = this.handleInputChange.bind(this);
   }
 
-  handleChange = event => {
-    const { name, value } = event.target;
-
-    this.setState({
-        [name] : value
-    });
-}
 
 
   componentDidMount() {
@@ -63,32 +58,44 @@ class Messages extends Component {
     this.props.firebase.messages().off();
   }
 
-  onChangeTextA = event => {
-    this.setState({ text: event.target.value });
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
+  }
+
+
+
+  onClearMessage = event => {
+    this.setState({ text: '', vendorName:'' });
+    event.preventDefault();
   };
 
-  onChangeTextB = event => {
-    this.setState({ names: event.target.value });
-  };
+
+
 
   onCreateMessage = (event, authUser) => {
     this.props.firebase.messages().push({
       text: this.state.text,
-      names: this.state.names,
+      vendorName: this.state.vendorName,
       userId: authUser.uid,
       createdAt: this.props.firebase.serverValue.TIMESTAMP,
     });
 
-    this.setState({ text: '', names:'' });
+    this.setState({ text: '', vendorName:'' });
 
     event.preventDefault();
   };
 
-  onEditMessage = (message, text, names) => {
+  onEditMessage = (message, text, vendorName) => {
     this.props.firebase.message(message.uid).set({
       ...message,
       text,
-      names,
+      vendorName,
       editedAt: this.props.firebase.serverValue.TIMESTAMP,
     });
   };
@@ -106,12 +113,91 @@ class Messages extends Component {
 
   render() {
     const { users } = this.props;
-    const { text, messages, loading, names } = this.state;
+    const { text, messages, loading, vendorName, requesteddate } = this.state;
 
     return (
       <AuthUserContext.Consumer>
         {authUser => (
-          <div>
+        <div>
+         <form
+            onSubmit = {
+                event =>
+                this.onCreateMessage(event, authUser)
+              } >
+            
+            <label > Vendor Number: </label> 
+            <input
+            type = "text"
+            name = "text"
+            value = {
+              text
+            }
+            onChange={ this.handleInputChange } 
+            /> 
+            
+            <label> Vendor Name: </label> 
+            <input
+            type = "text"
+            name = "vendorName"
+            value = {
+              vendorName
+            }
+            onChange={ this.handleInputChange } 
+
+            /> 
+            
+            <label> Requested Date: </label> 
+            <input
+            type = "text"
+            name = "requesteddate"
+            value = {
+              requesteddate
+            }
+            onChange={ this.handleInputChange } 
+            /> 
+
+            <label> Type of Request: </label> 
+            <input
+            type = "text"
+            name = "vendorName1"
+            value = {
+              vendorName
+            }
+            onChange={ this.handleInputChange } 
+            /> 
+
+            <label> Comments: </label> 
+            <input
+            type = "text"
+            name = "vendorName2"
+            value = {
+              vendorName
+            }
+            onChange={ this.handleInputChange } 
+            /> 
+
+            <label> ACH: </label> 
+            <input
+            type = "text"
+            name = "vendorName3"
+            value = {
+              vendorName
+            }
+            onChange={ this.handleInputChange } 
+            /> 
+
+
+
+            <button type = "submit" > Save </button> 
+
+            
+
+
+            </form>
+
+            <button type="button" onClick={this.onClearMessage} > Clear </button> 
+
+
             {!loading && messages && (
               <button type="button" onClick={this.onNextPage}>
                 More
@@ -135,33 +221,10 @@ class Messages extends Component {
 
             {!messages && <div>There are no Records ...</div>}
 
-            <form
-              onSubmit={event =>
-                this.onCreateMessage(event, authUser)
-              }
-            ><label>Text</label>
-              <input
-                type="text"
-                value={text}
-                onChange={this.onChangeTextA}
-              />
-<label>Names</label>
-<input 
-    type="text" 
-    name="names" 
-    value={names}
-    onChange={this.onChangeTextB}
+            
+                                
 
-     />
-
-
-
-              <button type="submit">Send</button>
-            </form>
-          
- 
-
-</div>
+            </div>
 
         )}
       </AuthUserContext.Consumer>

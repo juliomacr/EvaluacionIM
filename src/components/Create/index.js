@@ -34,8 +34,8 @@ class CreatePage extends Component {
     const { characters } = this.state;
     return (
       <div className="container">
-      <h1>Create New</h1>
-      <p>Add a character with a name and a job to the table.</p>
+      <h1>Create New Request to Track</h1>
+      <p>Add the required information for the Vendor Request.</p>
 
       <h3>Add New</h3>
       <Form handleSubmit={this.handleSubmit} />
@@ -43,17 +43,17 @@ class CreatePage extends Component {
   
   
 
-        <h1>Create New</h1>
-        <p>The Home Page is accessible by every signed in user.</p>
 
-        <Messages users={this.state.users} />
+        <p>This Page is accessible by every signed in user.</p>
+
+
       </div>
 
 
 
     );
   }
-}
+ }
 
 const condition = authUser => !!authUser;
 

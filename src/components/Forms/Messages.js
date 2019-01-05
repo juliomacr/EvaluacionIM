@@ -135,28 +135,37 @@ class Messages extends Component {
 
             {!messages && <div>There are no Records ...</div>}
 
-            <form
-              onSubmit={event =>
+            < form
+            onSubmit = {
+                event =>
                 this.onCreateMessage(event, authUser)
-              }
-            ><label>Text</label>
-              <input
-                type="text"
-                value={text}
-                onChange={this.onChangeTextA}
-              />
-<label>Names</label>
-<input 
-    type="text" 
-    name="names" 
-    value={names}
-    onChange={this.onChangeTextB}
+              } >
+              <label> Text </label> <
+              input
+            type = "text"
+            value = {
+              text
+            }
+            onChange = {
+              this.onChangeTextA
+            }
+            /> <
+            label > Names </label> <
+              input
+            type = "text"
+            name = "names"
+            value = {
+              names
+            }
+            onChange = {
+              this.onChangeTextB
+            }
+            />
 
-     />
 
 
-
-              <button type="submit">Send</button>
+            <
+            button type = "submit" > Send </button> 
             </form>
           
  
