@@ -22,7 +22,7 @@ const SignInPage = () => (
     <SignInTwitter />
     </div>
     <div class="col"> 
-    <SignInForm />
+    <SignInForm/>
     </div>
  </div>
  <div>
@@ -98,6 +98,7 @@ class SignInFormBase extends Component {
         <input
           name="email"
           value={email}
+          className="inputLG"
           onChange={this.onChange}
           type="text"
           placeholder="Email Address"
@@ -105,6 +106,7 @@ class SignInFormBase extends Component {
         <input
           name="password"
           value={password}
+          className="inputLG"
           onChange={this.onChange}
           type="password"
           placeholder="Password"

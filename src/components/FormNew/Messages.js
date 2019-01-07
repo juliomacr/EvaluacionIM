@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { TextArea } from 'semantic-ui-react'
 
 import { AuthUserContext } from '../Session';
 import { withFirebase } from '../Firebase';
@@ -158,38 +159,77 @@ class Messages extends Component {
       <AuthUserContext.Consumer>
         {authUser => (
         <div>
+
+
+
+
+          
          <form
             onSubmit = {
                 event =>
                 this.onCreateMessage(event, authUser)
               } >
-            
+
+  <div className="contenedorform">
+
+<div className="zona1">
+
+<div className="col1a">
             <label > Vendor Number: </label> 
             <input
-            type = "text"
+            type="number"
+            placeholder="Vendor Number: #######(ex 1009516)"
             name = "vendorNumber"
             value = {
               vendorNumber
             }
             onChange={ this.handleInputChange } 
             /> 
-            
+             <span className="focus-border">
+                <i></i>
+              </span>
+              </div>
+
+
+
+              <div className="col2a">
             <label> Vendor Name: </label> 
             <input
             type = "text"
+            className="effect-9"
+            placeholder="Vendor Name: (ex L.L.Bean Inc.) "
             name = "vendorName"
             value = {
               vendorName
             }
             onChange={ this.handleInputChange } 
-
             /> 
+             <span className="focus-border">
+                <i></i>
+              </span>
+              </div>
+
+
+
+
+
+
+
+
+</div>
+
+<hr classname="linestyle" />
+<br/>
+
+
+
+            
+<div className="zona2">    
+
+<div className="col1a">
             
             <label> Requested Date: </label> 
-
-
-
-            <div>
+            <div >
         <DayPicker
           onDayClick={this.handleDayClick}
           selectedDays={this.state.requesteddate}
@@ -200,15 +240,15 @@ class Messages extends Component {
           <p>Please select a day.</p>
         )}
       </div>
+      </div>
 
 
 
-
-
+      <div className="col2a">
       <div className="switch">
         <label>Type of Request</label>
         <label htmlFor="normal-switch">
-          <span>Is this a new request?</span>
+          <span>Is this a <b>NEW</b> or a <b>CHANGE</b> request?</span>
           <Switch
             onChange={this.handleSwitchChangeA}
             checked={this.state.checked}
@@ -219,27 +259,6 @@ class Messages extends Component {
         <p>This is a <span>{this.state.checked ? <b>NEW</b>: <b>CHANGE</b>}</span> request.</p>
       </div>
 
-
-
-            <label> Comments: </label> 
-            <input
-            type = "text"
-            name = "comments"
-            value = {
-              comments
-            }
-            onChange={ this.handleInputChange } 
-            /> 
-
-            <label> ACH: </label> 
-            <input
-            type = "text"
-            name = "ach"
-            value = {
-              ach
-            }
-            onChange={ this.handleInputChange } 
-            /> 
 
 
 <div className="switch">
@@ -256,17 +275,52 @@ class Messages extends Component {
         <p>This is <span>{this.state.checkedB ? <b>ACH</b>: <b>NOT an ACH</b>}</span> request.</p>
       </div>
 
+      </div>
+
+</div>
+<br/>
+<hr classname="linestyle" />
+<br/>
+
+<div className="zona3">
+<div className="col2a">
+
+<label> Comments: </label> 
+            <TextArea
+            type = "text"
+            name = "comments"
+            multiline
+            rowsMax="4"
+            margin="normal"
+            value = {
+              comments
+            }
+            onChange={ this.handleInputChange } 
+            /> 
+
+
+</div>
+</div>
 
 
 
+
+<div className="zonabotones">
             <button type = "submit" > Save </button> 
 
             
 
             <button type="button" onClick={this.onClearMessage} > Clear </button> 
+</div>
+
+</div>
+
+
             </form>
 
-
+            <br/>
+<hr classname="linestyle" />
+<br/>
 
 
             {!loading && messages && (
@@ -296,6 +350,7 @@ class Messages extends Component {
                                 
 
             </div>
+            
 
         )}
       </AuthUserContext.Consumer>

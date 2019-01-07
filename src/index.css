@@ -59,6 +59,42 @@ section,
 summary {
   display: block; }
 
+
+/****** Creation Form CSS ********/
+
+.linestyle{
+  border-top: 3px double #8c8b8b;
+  border: 25; 
+}
+
+
+.contenedorform {
+  
+}
+
+
+  .zona1 {
+    margin: 20px;
+  }
+  .zona2 {
+    margin: 20px;
+
+  }
+
+
+
+
+.col1a{
+
+
+}
+
+.col2a{
+
+
+}
+
+
 /**
  * 1. Correct `inline-block` display not defined in IE 8/9.
  * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
@@ -314,8 +350,9 @@ kbd {
 
 hr {
   height: 0;
-  border: 0;
-  border-top: 1px solid #dedede; }
+  border: 1;
+  border-top: 1px solid #dedede;
+margin-top: 20px; }
 
 dt {
   font-weight: 600; }
@@ -704,7 +741,7 @@ caption {
 } 
 
 /* style inputs and link buttons */
-input,
+.inputLG,
 .btn {
   width: 100%;
   padding: 12px;
@@ -718,7 +755,7 @@ input,
   text-decoration: none; /* remove underline from anchors */
 }
 
-input:hover,
+.inputLG:hover,
 .btn:hover {
   opacity: 1;
 }
@@ -819,4 +856,11 @@ input:hover,
     display: block;
     text-align: center;
   }
+
+
+
+/* FORM CSS */
+
+
+  
 }
