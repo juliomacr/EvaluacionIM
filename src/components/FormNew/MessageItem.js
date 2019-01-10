@@ -13,12 +13,16 @@ class MessageItem extends Component {
   onToggleEditMode = () => {
     this.setState(state => ({
       editMode: !state.editMode,
-      editText: this.props.message.text,
+      vendorNumber: this.props.message.vendorNumber,
       vendorName: this.props.message.vendorName,
     }));
   };
 
-  handleInputChange(event) {
+
+
+
+  
+  onChangeEditText = event => {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
@@ -29,32 +33,35 @@ class MessageItem extends Component {
   }
 
   onSaveEditText = () => {
-    this.props.onEditMessage(this.props.message, this.state.editText, this.state.vendorName);
+    this.props.onEditMessage(this.props.message, this.state.vendorNumber, this.state.vendorName);
 
     this.setState({ editMode: false });
   };
 
   render() {
     const { message, onRemoveMessage } = this.props;
-    const { editMode, editText, vendorName } = this.state;
+    const { editMode, vendorNumber, vendorName } = this.state;
 
     return (
       <li>
         {editMode ? (
           <div>
+          
+          <label>Vendor Number: </label>
           <input
-            type="text"
-            value={editText}
-            onChange={this.onChangeEditTextA}
+            type="number"
+            name="vendorNumber"
+            value={vendorNumber}
+            onChange={this.onChangeEditText}
           />
           
  
-          <label>vendorName</label>
+          <label>Vendor Name: </label>
 <input 
     type="text" 
     name="vendorName" 
     value={vendorName}
-    onChange={ this.handleInputChange } 
+    onChange={ this.onChangeEditText } 
     
      />
 
@@ -65,17 +72,17 @@ class MessageItem extends Component {
             <strong>
               {message.user.username || message.user.userId}
             </strong>{' '}
-            {message.text} {message.editedAt && <span>(Edited)</span>}
+            {message.text} {message.editedAt && <span>(Audited)</span>}
           </span>
         )}
 
         {editMode ? (
           <span>
             <button onClick={this.onSaveEditText}>Save</button>
-            <button onClick={this.onToggleEditMode}>Reset</button>
+            <button onClick={this.onToggleEditMode}>Cancel</button>
           </span>
         ) : (
-          <button onClick={this.onToggleEditMode}>Edit</button>
+          <button onClick={this.onToggleEditMode}>Audit</button>
         )}
 
         {!editMode && (

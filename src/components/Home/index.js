@@ -3,7 +3,7 @@ import { compose } from 'recompose';
 
 import { withAuthorization, withEmailVerification } from '../Session';
 import { withFirebase } from '../Firebase';
-import Messages from '../Messages';
+import Messages from '../FormAudit';
 
 class HomePage extends Component {
   constructor(props) {
