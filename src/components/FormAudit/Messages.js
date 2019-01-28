@@ -22,12 +22,17 @@ class Messages extends Component {
       vendorNumber: '',
       requesttype: '',
       comments: '',
+      auditComments:'',
       ach: '',
       loading: false,
       messages: [],
       checked: false,
       checkedB: false,
-      limit: 5
+      limit: 5,
+      error1: false,
+      error2: false,
+      error3: false,
+      error4: false
     };
 
     this.state = this.initialState;
@@ -97,6 +102,16 @@ class Messages extends Component {
       });
   };
 
+	filterList(event) {
+		var updatedList = this.state.messages;
+		updatedList = updatedList.filter(function(item){
+      return item.vendorNumber.search(
+        event.target.value) !== -1;
+    });
+    this.setState({messages: updatedList});
+	}
+
+
   componentWillUnmount() {
     this.props.firebase.messages().off();
   }
@@ -108,6 +123,7 @@ class Messages extends Component {
   onClearMessage = event => {
     this.setState({ vendorNumber: '', vendorName:'', requesteddate:'', requesttype:'', comments:'', ach:'' , checked: false, checkedB: false});
     event.preventDefault();
+    this.onListenForMessages();
   };
 
 
@@ -125,16 +141,20 @@ class Messages extends Component {
       ach: this.state.checkedB,
     });
 
-    this.setState({ vendorNumber: '', vendorName:'', requesteddate:'', requesttype:'', comments:'', ach:'', checked: false, checkedB: false });
+    this.setState({ auditComments:'', vendorNumber: '', vendorName:'', requesteddate:'', requesttype:'', comments:'', ach:'', checkedA: false, checkedB: false });
 
     event.preventDefault();
   };
 
-  onEditMessage = (message, comments) => {
+  onEditMessage = (message, auditComments, checkedA, checkedB, checkedC, checkedD ) => {
     this.props.firebase.message(message.uid).set({
       ...message,
-      comments,
+      auditComments,
       editedAt: this.props.firebase.serverValue.TIMESTAMP,
+      error1: checkedA,
+      error2: checkedB,
+      error3: checkedC,
+      error4: checkedD
     });
   };
 
@@ -148,6 +168,7 @@ class Messages extends Component {
       this.onListenForMessages,
     );
   };
+
 
   render() {
     const { users } = this.props;
@@ -167,16 +188,23 @@ class Messages extends Component {
 
 
             {!loading && messages && (
+              <div>
               <button type="button" onClick={this.onNextPage}>
                 More
               </button>
+              <button type="button" onClick={this.onClearMessage} > Clear </button> 
+              </div>
             )}
 
             {loading && <div>Loading ...</div>}
 
             {messages && (
+              <div>
+                
+           <input type="text" className="form-control form-control-lg" placeholder="Search" onChange={this.filterList.bind(this)} />
+
               <MessageList
-                messages={messages.map(message => ({
+                messages={this.state.messages.map(message => ({
                   ...message,
                   user: users
                     ? users[message.userId]
@@ -185,6 +213,7 @@ class Messages extends Component {
                 onEditMessage={this.onEditMessage}
                 onRemoveMessage={this.onRemoveMessage}
               />
+              </div>
             )}
 
             {!messages && <div>There are no Records ...</div>}

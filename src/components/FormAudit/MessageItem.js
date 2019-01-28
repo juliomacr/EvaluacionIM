@@ -18,18 +18,56 @@ class MessageItem extends Component {
 
     this.state = {
       editMode: false,
-      comments: this.props.message.comments,
+      checkedA: false,
+      checkedB: false,
+      checkedC: false,
+      checkedD: false
     };
+    this.handleSwitchChangeA = this.handleSwitchChangeA.bind(this);
+    this.handleSwitchChangeB = this.handleSwitchChangeB.bind(this);
+    this.handleSwitchChangeC = this.handleSwitchChangeC.bind(this);
+    this.handleSwitchChangeD = this.handleSwitchChangeD.bind(this);
+
   }
+
+  
 
   onToggleEditMode = () => {
     this.setState(state => ({
       editMode: !state.editMode,
       vendorNumber: this.props.message.vendorNumber,
       vendorName: this.props.message.vendorName,
-      requesteddate: this.props.message.requesteddate
+      requesteddate: this.props.message.requesteddate,
+      ach: this.props.message.ach,
+      requesttype: this.props.message.requesttype,
+      comments: this.props.message.comments, 
+      editedAt: this.props.message.editedAt,
+      auditComments:'',
+      checkedA: false,
+      checkedB: false,
+      checkedC: false,
+      checkedD: false
     }));
   };
+
+//Para cuando ya están auditados que cargue con los valores de la auditoria
+  // onToggleEditMode = () => {
+  //   this.setState(state => ({
+  //     editMode: !state.editMode,
+  //     vendorNumber: this.props.message.vendorNumber,
+  //     vendorName: this.props.message.vendorName,
+  //     requesteddate: this.props.message.requesteddate,
+  //     ach: this.props.message.ach,
+  //     requesttype: this.props.message.requesttype,
+  //     comments: this.props.message.comments, 
+  //     editedAt: this.props.message.editedAt,
+  //     auditComments: this.props.message.auditComments,
+  //     checkedA: this.props.message.error1,
+  //     checkedB: this.props.message.error2,
+  //     checkedC: this.props.message.error3,
+  //     checkedD: this.props.message.error4
+  //   }));
+  // };
 
 
  
@@ -45,9 +83,23 @@ class MessageItem extends Component {
     });
   }
 
+handleSwitchChangeA(checkedA) {
+    this.setState({ checkedA });
+}
+
+handleSwitchChangeB(checkedB) {
+    this.setState({ checkedB });
+}
+handleSwitchChangeC(checkedC) {
+  this.setState({ checkedC });
+}
+
+handleSwitchChangeD(checkedD) {
+  this.setState({ checkedD });
+}
 
   onSaveEditText = () => {
-    this.props.onEditMessage(this.props.message, this.state.comments);
+    this.props.onEditMessage(this.props.message, this.state.auditComments, this.state.checkedA, this.state.checkedB, this.state.checkedC, this.state.checkedD);
     this.setState({ editMode: false });
   };
 
@@ -55,9 +107,7 @@ class MessageItem extends Component {
 
   render() {
     const { message, onRemoveMessage } = this.props;
-    const { editMode, comments, vendorNumber, vendorName, requesteddate } = this.state;
-
-    const  test =<Moment format="YYYY, MM, DD">{message.requesteddate}</Moment>;
+    const { editMode, comments, vendorNumber, vendorName, requesteddate, ach, requesttype, auditComments,  editedAt } = this.state;
 
 
     return (
@@ -88,7 +138,7 @@ class MessageItem extends Component {
             value = {
               vendorNumber
             }
-            onChange={ this.handleInputChange } 
+            
             /> 
              <span className="focus-border">
                 <i></i>
@@ -106,7 +156,7 @@ class MessageItem extends Component {
             value = {
               vendorName
             }
-            onChange={ this.handleInputChange } 
+          
             /> 
              <span className="focus-border">
                 <i></i>
@@ -123,29 +173,17 @@ class MessageItem extends Component {
 <div className="col1a">
 
             
-            <label> Requested Date: { requesteddate } lalalla {test}</label> 
+            <label> Requested Date: { requesteddate }</label> 
             <div >
             <p>  {<Moment format="YYYY, MM, DD">{message.requesteddate}</Moment>}</p>
-            
-
-            
-
-        <DayPicker
-        
-
-
-        
+        <DayPicker       
         selectedDays={[
           new Date(requesteddate),
-        ]}
-         
+        ]}        
         />
-
         
       </div>
       </div>
-
-
 
       <div className="col2a">
       <div className="switch">
@@ -153,8 +191,7 @@ class MessageItem extends Component {
         <label htmlFor="normal-switch">
           <span>Is this a <b>NEW</b> or a <b>CHANGE</b> request?</span>
           <Switch
-            onChange={this.handleSwitchChangeA}
-            checked={this.state.checked}
+            checked={requesttype}
             className="react-switch"
             id="normal-switch"
           />
@@ -169,21 +206,18 @@ class MessageItem extends Component {
         <label htmlFor="normal-switch">
           <span>Is this an <b>ACH</b> request?</span>
           <Switch
-            onChange={this.handleSwitchChangeB}
-            checked={this.state.checkedB}
+            checked={ach}
             className="react-switch"
             id="normal-switch"
           />
         </label>
-        <p>This is <span>{this.state.checkedB ? <b>ACH</b>: <b>NOT an ACH</b>}</span> request.</p>
+        <p>This is <span>{this.state.message ? <b>an ACH</b>: <b>NOT an ACH</b>}</span> request.</p>
       </div>
 
       </div>
 
 </div>
-<br/>
-<hr classname="linestyle" />
-<br/>
+
 
 <div className="zona3">
 <div className="col2a">
@@ -198,6 +232,86 @@ class MessageItem extends Component {
             value = {
               comments
             }
+            /> 
+
+
+</div>
+</div>
+
+<br/>
+<hr classname="linestyle" />
+<br/>
+
+
+<div className="zona4">
+<div className="col2a">
+
+<label>Audit Error: </label> 
+<p> Select all the error types that apply</p>
+
+
+<div className="switch">
+        <label>error1</label>
+        <label htmlFor="normal-switch">
+          <span>error1?</span>
+          <Switch
+            checked={this.state.checkedA}
+            onChange={this.handleSwitchChangeA}
+            className="react-switch"
+            id="normal-switch"
+          />
+        </label>
+  </div>
+  <div className="switch">
+        <label>error2</label>
+        <label htmlFor="normal-switch">
+          <span>error2?</span>
+          <Switch
+            checked={this.state.checkedB}
+            onChange={this.handleSwitchChangeB}
+            className="react-switch"
+            id="normal-switch"
+          />
+        </label>
+  </div>
+  <div className="switch">
+        <label>error3</label>
+        <label htmlFor="normal-switch">
+          <span>error3?</span>
+          <Switch
+            checked={this.state.checkedC}
+            onChange={this.handleSwitchChangeC}
+            className="react-switch"
+            id="normal-switch"
+          />
+        </label>
+  </div>
+  <div className="switch">
+        <label>error4</label>
+        <label htmlFor="normal-switch">
+          <span>error4?</span>
+          <Switch
+            checked={this.state.checkedD}
+            onChange={this.handleSwitchChangeD}
+            className="react-switch"
+            id="normal-switch"
+          />
+        </label>
+  </div>
+
+
+
+
+<label>Audit Comments: </label> 
+            <TextArea
+            type = "text"
+            name = "auditComments"
+            multiline
+            rowsMax="4"
+            margin="normal"
+            value = {
+              auditComments
+            }
             onChange={ this.onChangeEditText } 
             /> 
 
@@ -205,9 +319,9 @@ class MessageItem extends Component {
 </div>
 </div>
 
-
-
-
+<br/>
+<hr classname="linestyle" />
+<br/>
 
 </div>
 
@@ -222,9 +336,9 @@ class MessageItem extends Component {
         ) : (
           <span>
             <strong>
-              {message.user.username || message.user.userId}
+              {message.vendorNumber}
             </strong>{' '}
-            {message.comments}{message.comments}{message.requesteddate} <span>(Audited)</span>
+            {message.vendorName } {message.requesteddate} {message.createdAt} {message.editedAt} {message.editedAt && <span>(Audited)</span>}
           </span>
         )}
 
