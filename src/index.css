@@ -365,7 +365,7 @@ dd {
   padding: 0 1rem; }
 
 .container, .small-container, .medium-container {
-  max-width: 1200px;
+  max-width: 900px;
   padding: 0 1rem;
   margin-left: auto;
   margin-right: auto; }
@@ -705,7 +705,7 @@ caption {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #333;
+    background-color: #f8f5ef;
   }
   
   .topnav li {
@@ -714,14 +714,14 @@ caption {
   
   .topnav li a {
     display: block;
-    color: white;
+    color: #1a854a;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
   }
   
   .topnav li a:hover {
-    background-color: #111;
+    background-color: #cfcc73
   }
 
   
